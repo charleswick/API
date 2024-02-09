@@ -26,6 +26,7 @@ import org.json.simple.parser.ParseException;
 public class ReadJson implements ActionListener {
     private JFrame mainFrame;
     private JPanel upperPanel, lowerPanel, alliesPanel, namePanel;
+    private JTextArea nameDisplayer, allyDisplayer;
     private JLabel characterLabel, alliesLabel;
     private int WIDTH=800;
     private int HEIGHT=700;
@@ -71,6 +72,13 @@ public class ReadJson implements ActionListener {
         alliesPanel= new JPanel();
         alliesPanel.setLayout(new BorderLayout());
         upperPanel.add(alliesPanel);
+        allyDisplayer=new JTextArea();
+        nameDisplayer=new JTextArea();
+        alliesPanel.add(allyDisplayer,BorderLayout.CENTER);
+        namePanel.add(nameDisplayer,BorderLayout.CENTER);
+
+
+
 //
         alliesLabel = new JLabel("Allies");
         characterLabel = new JLabel("Character");
@@ -102,7 +110,7 @@ public class ReadJson implements ActionListener {
         JButton previous = new JButton("Previous");
 
 
-        //okButton.addActionListener(new ButtonClickListener());
+        next.addActionListener(new ButtonClickListener());
 
 
 //        mainFrame.add(okButton);
@@ -177,17 +185,17 @@ public class ReadJson implements ActionListener {
 //                // System.out.println(person.getInt("key"));
 //            }
             //String name= (String)jsonObject.get("height");
-            System.out.println(jsonObjectArray.get(0));
-            JSONObject secretTunnelGuy = (JSONObject) jsonObjectArray.get(0);
-            System.out.println(secretTunnelGuy.get("name"));
-            System.out.println(secretTunnelGuy.get("allies"));
-            JSONArray chongAllies =  (JSONArray) secretTunnelGuy.get("allies");
-            System.out.println(chongAllies.get(0));
-            System.out.println(jsonObjectArray.get(1));
-            JSONObject chief = (JSONObject) jsonObjectArray.get(1);
-            System.out.println(chief.get("name"));
-            JSONArray chiefAllies =  (JSONArray) chief.get("enemies");
-            System.out.println(chiefAllies.get(0));
+//            System.out.println(jsonObjectArray.get(0));
+//            JSONObject secretTunnelGuy = (JSONObject) jsonObjectArray.get(0);
+//            System.out.println(secretTunnelGuy.get("name"));
+//            System.out.println(secretTunnelGuy.get("allies"));
+//            JSONArray chongAllies =  (JSONArray) secretTunnelGuy.get("allies");
+//            System.out.println(chongAllies.get(0));
+//            System.out.println(jsonObjectArray.get(1));
+//            JSONObject chief = (JSONObject) jsonObjectArray.get(1);
+//            System.out.println(chief.get("name"));
+//            JSONArray chiefAllies =  (JSONArray) chief.get("enemies");
+//            System.out.println(chiefAllies.get(0));
             for (int x =0; x<jsonObjectArray.size();x++){
                 JSONObject temp = (JSONObject) jsonObjectArray.get(x);
                 System.out.println(temp.get("name"));
@@ -219,6 +227,128 @@ public class ReadJson implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
     }
-}
+
+    private class ButtonClickListener implements ActionListener {
+        int counter = 0;
+
+
+
+
+        @Override
+        public void actionPerformed(ActionEvent d) {
+
+            String output = "abc";
+            String totlaJson="";
+            String command = d.getActionCommand();
+            if (command.equals("Next")){
+                counter++;
+                allyDisplayer.selectAll();
+                allyDisplayer.replaceSelection("");
+                nameDisplayer.selectAll();
+                nameDisplayer.replaceSelection("");
+
+
+
+                try {
+
+                    URL url = new URL("https://last-airbender-api.fly.dev/api/v1/characters");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.setRequestProperty("Accept", "application/json");
+
+                    if (conn.getResponseCode() != 200) {
+
+                        throw new RuntimeException("Failed : HTTP error code : "
+                                + conn.getResponseCode());
+                    }
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(
+                            (conn.getInputStream())));
+
+
+                    System.out.println("Output from Server .... \n");
+                    while ((output = br.readLine()) != null) {
+                        //System.out.println(output);
+                        totlaJson+=output;
+                    }
+
+                    conn.disconnect();
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                JSONParser parser = new JSONParser();
+                //System.out.println(str);
+                JSONArray jsonObjectArray = null;
+                try {
+                    jsonObjectArray = (JSONArray) parser.parse(totlaJson);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                //System.out.println(jsonObjectArray);
+
+                try {
+
+
+
+//            org.json.simple.JSONArray msg = (org.json.simple.JSONArray) jsonObject.get("abilities");
+//            int n =   msg.size(); //(msg).length();
+//            for (int i = 0; i < n; ++i) {
+//                String test =(String) msg.get(i);
+//                System.out.println(test);
+//                // System.out.println(person.getInt("key"));
+//            }
+                    //String name= (String)jsonObject.get("height");
+//            System.out.println(jsonObjectArray.get(0));
+//            JSONObject secretTunnelGuy = (JSONObject) jsonObjectArray.get(0);
+//            System.out.println(secretTunnelGuy.get("name"));
+//            System.out.println(secretTunnelGuy.get("allies"));
+//            JSONArray chongAllies =  (JSONArray) secretTunnelGuy.get("allies");
+//            System.out.println(chongAllies.get(0));
+//            System.out.println(jsonObjectArray.get(1));
+//            JSONObject chief = (JSONObject) jsonObjectArray.get(1);
+//            System.out.println(chief.get("name"));
+//            JSONArray chiefAllies =  (JSONArray) chief.get("enemies");
+//            System.out.println(chiefAllies.get(0));
+                    if (counter<jsonObjectArray.size()){
+                        JSONObject temp = (JSONObject) jsonObjectArray.get(counter);
+                        nameDisplayer.append((String)(temp.get("name")));
+
+                        JSONArray tempAllies =  (JSONArray) temp.get("allies");
+                        for (int y =0; y<tempAllies.size();y++){
+
+                            allyDisplayer.append((String)((tempAllies.get(y))));
+                        }
+
+
+
+                    }
+
+
+
+
+                }
+
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+            }
+
+
+
+
+        }
+
+        }
+    }
+
 
 
