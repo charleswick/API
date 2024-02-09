@@ -74,7 +74,7 @@ public class ReadJson implements ActionListener {
 //
         alliesLabel = new JLabel("Allies");
         characterLabel = new JLabel("Character");
-        namePanel.add(namePanel,BorderLayout.NORTH);
+        namePanel.add(characterLabel,BorderLayout.NORTH);
         alliesPanel.add(alliesLabel,BorderLayout.NORTH);
 
 
