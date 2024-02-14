@@ -28,15 +28,15 @@ public class ReadJson implements ActionListener {
     private JPanel upperPanel, lowerPanel, alliesPanel, namePanel;
     private JTextArea nameDisplayer, allyDisplayer;
     private JLabel characterLabel, alliesLabel;
-    private int WIDTH=800;
-    private int HEIGHT=700;
+    private int WIDTH = 800;
+    int counter = 0;
+    private int HEIGHT = 700;
 
     public static void main(String args[]) throws ParseException {
         // In java JSONObject is used to create JSON object
         // which is a subclass of java.util.HashMap.
         ReadJson gavin = new ReadJson();
         gavin.showEventDemo();
-
 
 
         JSONObject file = new JSONObject();
@@ -50,40 +50,41 @@ public class ReadJson implements ActionListener {
         pull();
 
     }
-    public ReadJson(){
+
+    public ReadJson() {
         prepareGUI();
 
     }
+
     private void prepareGUI() {
         mainFrame = new JFrame("Java SWING Examples");
         mainFrame.setSize(WIDTH, HEIGHT);
         mainFrame.setLayout(new GridLayout(2, 1));
 
-        upperPanel=new JPanel();
-        upperPanel.setLayout(new GridLayout(1,2));
-        lowerPanel=new JPanel();
-        lowerPanel.setLayout(new GridLayout(1,2));
+        upperPanel = new JPanel();
+        upperPanel.setLayout(new GridLayout(1, 2));
+        lowerPanel = new JPanel();
+        lowerPanel.setLayout(new GridLayout(1, 2));
         mainFrame.add(upperPanel);
         mainFrame.add(lowerPanel);
 
-        namePanel= new JPanel();
+        namePanel = new JPanel();
         namePanel.setLayout(new BorderLayout());
         upperPanel.add(namePanel);
-        alliesPanel= new JPanel();
+        alliesPanel = new JPanel();
         alliesPanel.setLayout(new BorderLayout());
         upperPanel.add(alliesPanel);
-        allyDisplayer=new JTextArea();
-        nameDisplayer=new JTextArea();
-        alliesPanel.add(allyDisplayer,BorderLayout.CENTER);
-        namePanel.add(nameDisplayer,BorderLayout.CENTER);
-
+        allyDisplayer = new JTextArea();
+        nameDisplayer = new JTextArea();
+        alliesPanel.add(allyDisplayer, BorderLayout.CENTER);
+        namePanel.add(nameDisplayer, BorderLayout.CENTER);
 
 
 //
         alliesLabel = new JLabel("Allies");
         characterLabel = new JLabel("Character");
-        namePanel.add(characterLabel,BorderLayout.NORTH);
-        alliesPanel.add(alliesLabel,BorderLayout.NORTH);
+        namePanel.add(characterLabel, BorderLayout.NORTH);
+        alliesPanel.add(alliesLabel, BorderLayout.NORTH);
 
 
 //        ta = new JTextField();
@@ -95,9 +96,6 @@ public class ReadJson implements ActionListener {
 //        resultsPanel = new JTextArea();
 
 
-
-
-
         mainFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent windowEvent) {
                 System.exit(0);
@@ -105,12 +103,14 @@ public class ReadJson implements ActionListener {
         });
 //
 
-     //   JButton okButton = new JButton("Search");
+        //   JButton okButton = new JButton("Search");
         JButton next = new JButton("Next");
         JButton previous = new JButton("Previous");
 
 
         next.addActionListener(new ButtonClickListener());
+        previous.addActionListener(new ButtonClickListener());
+
 
 
 //        mainFrame.add(okButton);
@@ -135,7 +135,7 @@ public class ReadJson implements ActionListener {
 
     public static void pull() throws ParseException {
         String output = "abc";
-        String totlaJson="";
+        String totlaJson = "";
         try {
 
             URL url = new URL("https://last-airbender-api.fly.dev/api/v1/characters");
@@ -156,7 +156,7 @@ public class ReadJson implements ActionListener {
             System.out.println("Output from Server .... \n");
             while ((output = br.readLine()) != null) {
                 //System.out.println(output);
-                totlaJson+=output;
+                totlaJson += output;
             }
 
             conn.disconnect();
@@ -174,7 +174,6 @@ public class ReadJson implements ActionListener {
         //System.out.println(jsonObjectArray);
 
         try {
-
 
 
 //            org.json.simple.JSONArray msg = (org.json.simple.JSONArray) jsonObject.get("abilities");
@@ -196,29 +195,22 @@ public class ReadJson implements ActionListener {
 //            System.out.println(chief.get("name"));
 //            JSONArray chiefAllies =  (JSONArray) chief.get("enemies");
 //            System.out.println(chiefAllies.get(0));
-            for (int x =0; x<jsonObjectArray.size();x++){
+            for (int x = 0; x < jsonObjectArray.size(); x++) {
                 JSONObject temp = (JSONObject) jsonObjectArray.get(x);
                 System.out.println(temp.get("name"));
-                JSONArray tempAllies =  (JSONArray) temp.get("allies");
-                for (int y =0; y<tempAllies.size();y++){
+                JSONArray tempAllies = (JSONArray) temp.get("allies");
+                for (int y = 0; y < tempAllies.size(); y++) {
 
                     System.out.println(tempAllies.get(y));
                 }
 
 
-
             }
 
 
-
-
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
 
 
     }
@@ -229,7 +221,6 @@ public class ReadJson implements ActionListener {
     }
 
     private class ButtonClickListener implements ActionListener {
-        int counter = 0;
 
 
 
@@ -238,61 +229,71 @@ public class ReadJson implements ActionListener {
         public void actionPerformed(ActionEvent d) {
 
             String output = "abc";
-            String totlaJson="";
+            String totlaJson = "";
             String command = d.getActionCommand();
-            if (command.equals("Next")){
-                counter++;
+            System.out.println(counter);
+
+            if (command.equals("Previous")) {
+                counter=counter-1;
                 allyDisplayer.selectAll();
                 allyDisplayer.replaceSelection("");
                 nameDisplayer.selectAll();
                 nameDisplayer.replaceSelection("");
+                System.out.println("ITS HAPPENING");
+            }
+            if (command.equals("Next")) {
+                counter=counter+1;
+                allyDisplayer.selectAll();
+                allyDisplayer.replaceSelection("");
+                nameDisplayer.selectAll();
+                nameDisplayer.replaceSelection("");
+            }
 
 
 
-                try {
+                    try {
 
-                    URL url = new URL("https://last-airbender-api.fly.dev/api/v1/characters");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.setRequestProperty("Accept", "application/json");
+                        URL url = new URL("https://last-airbender-api.fly.dev/api/v1/characters");
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestMethod("GET");
+                        conn.setRequestProperty("Accept", "application/json");
 
-                    if (conn.getResponseCode() != 200) {
+                        if (conn.getResponseCode() != 200) {
 
-                        throw new RuntimeException("Failed : HTTP error code : "
-                                + conn.getResponseCode());
+                            throw new RuntimeException("Failed : HTTP error code : "
+                                    + conn.getResponseCode());
+                        }
+
+                        BufferedReader br = new BufferedReader(new InputStreamReader(
+                                (conn.getInputStream())));
+
+
+                        System.out.println("Output from Server .... \n");
+                        while ((output = br.readLine()) != null) {
+                            //System.out.println(output);
+                            totlaJson += output;
+                        }
+
+                        conn.disconnect();
+
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
-                    BufferedReader br = new BufferedReader(new InputStreamReader(
-                            (conn.getInputStream())));
-
-
-                    System.out.println("Output from Server .... \n");
-                    while ((output = br.readLine()) != null) {
-                        //System.out.println(output);
-                        totlaJson+=output;
+                    JSONParser parser = new JSONParser();
+                    //System.out.println(str);
+                    JSONArray jsonObjectArray = null;
+                    try {
+                        jsonObjectArray = (JSONArray) parser.parse(totlaJson);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
                     }
+                    //System.out.println(jsonObjectArray);
 
-                    conn.disconnect();
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                JSONParser parser = new JSONParser();
-                //System.out.println(str);
-                JSONArray jsonObjectArray = null;
-                try {
-                    jsonObjectArray = (JSONArray) parser.parse(totlaJson);
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
-                //System.out.println(jsonObjectArray);
-
-                try {
-
+                    try {
 
 
 //            org.json.simple.JSONArray msg = (org.json.simple.JSONArray) jsonObject.get("abilities");
@@ -302,7 +303,7 @@ public class ReadJson implements ActionListener {
 //                System.out.println(test);
 //                // System.out.println(person.getInt("key"));
 //            }
-                    //String name= (String)jsonObject.get("height");
+                        //String name= (String)jsonObject.get("height");
 //            System.out.println(jsonObjectArray.get(0));
 //            JSONObject secretTunnelGuy = (JSONObject) jsonObjectArray.get(0);
 //            System.out.println(secretTunnelGuy.get("name"));
@@ -314,41 +315,40 @@ public class ReadJson implements ActionListener {
 //            System.out.println(chief.get("name"));
 //            JSONArray chiefAllies =  (JSONArray) chief.get("enemies");
 //            System.out.println(chiefAllies.get(0));
-                    if (counter<jsonObjectArray.size()){
-                        JSONObject temp = (JSONObject) jsonObjectArray.get(counter);
-                        nameDisplayer.append((String)(temp.get("name")));
+                        if (counter == -1){
+                            counter= jsonObjectArray.size();
 
-                        JSONArray tempAllies =  (JSONArray) temp.get("allies");
-                        for (int y =0; y<tempAllies.size();y++){
+                        }
+                        if (counter > jsonObjectArray.size()){
+                            counter= 0;
 
-                            allyDisplayer.append((String)((tempAllies.get(y))));
+                        }
+                        if (counter < jsonObjectArray.size()) {
+                            JSONObject temp = (JSONObject) jsonObjectArray.get(counter);
+                            nameDisplayer.append((String) (temp.get("name")));
+
+                            JSONArray tempAllies = (JSONArray) temp.get("allies");
+                            for (int y = 0; y < tempAllies.size(); y++) {
+
+                                allyDisplayer.append((String) ((tempAllies.get(y))));
+                            }
+
+
                         }
 
 
-
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
 
-
-
                 }
-
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
 
 
             }
 
-
-
-
         }
 
-        }
-    }
 
 
 
